@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1446604715 source:e:\gitproject\tp1inf3172\tp1inf3172\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
+1446598880 source:e:\gitproject\tp1inf3172\tp1inf3172\src\errorhandler.c
+	"ErrorHandler.h"
+
+1446599314 e:\gitproject\tp1inf3172\tp1inf3172\include\errorhandler.h
+
+1446598249 source:e:\gitproject\tp1inf3172\tp1inf3172\src\fichier.c
+	"Fichier.h"
+
+1446601726 e:\gitproject\tp1inf3172\tp1inf3172\include\fichier.h
+
