@@ -1,17 +1,17 @@
 #ifndef FICHIER_H
 #define FICHIER_H
 
-char blocLibre[64000];
+int blocLibre[64000] = {0};
 
 typedef struct iNode{
-    char bloc[8];
+    int bloc[8];
     struct indirectionSimple* indSimp;
     struct IndirectionDouble* indDoub;
     struct indirectionTriple* indTrip;
 } iNode;
 
 typedef struct indirectionSimple{
-    char bloc[8];
+    int bloc[8];
 } indirectionSimple;
 
 typedef struct IndirectionDouble{
@@ -27,5 +27,6 @@ int supprimerRepertoire(char* name);
 int creerFichier(char* name, char* contenu);
 int supprimerFichier(char* name);
 int lireFichier(char* name);
+iNode* populateInode();
 
 #endif // FICHIER_H

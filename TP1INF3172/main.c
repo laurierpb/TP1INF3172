@@ -5,15 +5,18 @@
 int verifierDemarage();
 int creerFichiersDemarage();
 int demarerInviteCommande();
+void analyserLecture(char* lecture);
 
 
-char* path = "a";
+char* path = "file.bin";
 
 int main(){
     if(!verifierDemarage()){
         creerFichiersDemarage();
     }
     demarerInviteCommande();
+
+    populateInode();
 
     char lecture[64000];
     int continuer = 1;
@@ -22,11 +25,10 @@ int main(){
         char* ptr = strchr(lecture, '\n');
         if (ptr != NULL) *ptr = '\0';
 
-        printf("%s\n", lecture);
         if(!strcmp(lecture, "fin")){
             continuer = 0;
         }else{
-            analyserLecture(&lecture);
+            analyserLecture(lecture);
         }
     }
     return 0;
@@ -39,13 +41,21 @@ int verifierDemarage(){
 
     return 0;
 }
-int creerFichiersDemarage(){
 
+int creerFichiersDemarage(){
+    FILE *fp = fopen(path, "w+");
+    fseek(fp, 512*1024, SEEK_SET);
+    fputc('a', fp);
+    fclose(fp);
     return 0;
 }
 
 //appelle les différentes fonctions du programme
 void analyserLecture(char* lecture){
+    if(!strcmp(lecture, "1")){
+        printf("work");
+    }
+
     return;
 }
 
