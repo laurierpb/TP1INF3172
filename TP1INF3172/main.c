@@ -3,20 +3,19 @@
 #include <string.h>
 
 int verifierDemarage();
-int creerFichiersDemarage();
+int creerFichiersFichierDemarage();
 int demarerInviteCommande();
 void analyserLecture(char* lecture);
 
-
-char* path = "file.bin";
+char* pathChaine = "chaine.dat";
+char* pathInode = "inode.dat";
+char* pathIndirection = "indirection.dat";
+char* pathBlocLibre = "blocLibre.dat";
 
 int main(){
-    if(!verifierDemarage()){
-        creerFichiersDemarage();
-    }
+    verifierDemarage();
     demarerInviteCommande();
-
-    populateInode();
+    creerFichier("ThisIsATest", "67mbcbvndfn ,sdfjgj lksjfglk jdkfgjxdfj gkdfjgljsdlgjslkdjf ");
 
     char lecture[64000];
     int continuer = 1;
@@ -38,15 +37,30 @@ int main(){
 * Verifie que tous les elements pour le demarage sont present
 */
 int verifierDemarage(){
-
+    /**à optimiser vraiment pas beau code*/
+    if(fopen(pathChaine, "rb+") == NULL){
+        creerFichiersFichierDemarage();
+    }else if(fopen(pathIndirection, "rb+") == NULL){
+        creerFichiersFichierDemarage();
+    }else if(fopen(pathInode, "rb+") == NULL){
+        creerFichiersFichierDemarage();
+    }
     return 0;
 }
 
-int creerFichiersDemarage(){
-    FILE *fp = fopen(path, "w+");
-    fseek(fp, 512*1024, SEEK_SET);
-    fputc('a', fp);
-    fclose(fp);
+int creerFichiersFichierDemarage(){
+    FILE *fp1 = fopen(pathChaine, "wb+");
+    fseek(fp1, 512*1024, SEEK_SET);
+    fputc('\n', fp1);
+    fclose(fp1);
+
+    /**Ces fichiers n'ont pas besoin de setter la grosseur*/
+    FILE *fp2 = fopen(pathIndirection, "wb+");
+    fclose(fp2);
+    FILE *fp3 = fopen(pathInode, "wb+");
+    fclose(fp3);
+    FILE *fp4 = fopen(pathBlocLibre, "wb+");
+    fclose(fp4);
     return 0;
 }
 
@@ -54,6 +68,8 @@ int creerFichiersDemarage(){
 void analyserLecture(char* lecture){
     if(!strcmp(lecture, "1")){
         printf("work");
+    }else if(strstr(lecture, " ") == NULL){
+        printf("Commande invalide\n");
     }
 
     return;

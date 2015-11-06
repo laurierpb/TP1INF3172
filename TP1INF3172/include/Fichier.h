@@ -3,24 +3,20 @@
 
 int blocLibre[64000] = {0};
 
+int blocLibreIndirection[1000] = {0};
+int blocLibreInode[1000] = {0};
+int blocLibreFichier[1000] = {0};
+
 typedef struct iNode{
     int bloc[8];
-    struct indirectionSimple* indSimp;
-    struct IndirectionDouble* indDoub;
-    struct indirectionTriple* indTrip;
+    int indirectionSimple;
+    int indirectionDouble;
+    int indirectionTriple;
 } iNode;
 
-typedef struct indirectionSimple{
+typedef struct indirection{
     int bloc[8];
-} indirectionSimple;
-
-typedef struct IndirectionDouble{
-    struct indirectionSimple* listIndSimp[8];
-} IndirectionDouble;
-
-typedef struct indirectionTriple{
-    struct IndirectionDouble* listIndDoub[8];
-} indirectionTriple;
+} indirection;
 
 int creerRepertoire(char* name);
 int supprimerRepertoire(char* name);
