@@ -19,11 +19,7 @@ int main(){
     char * d = "/sfdsf/dsfsdfds/wwwee/wwwqqq";
     verifierRepParent(d);
     return;
-<<<<<<< HEAD
 
-=======
-    */
->>>>>>> origin/master
     verifierDemarage();
     loadBlocLibre();
     demarerInviteCommande();
