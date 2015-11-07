@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ErrorHandler.h>
 
 int verifierDemarage();
 int creerFichiersFichierDemarage();
@@ -13,6 +14,11 @@ char* pathIndirection = "indirection.dat";
 char* pathBlocLibre = "blocLibre.dat";
 
 int main(){
+    char * d = "/sfdsf/dsfsdfds/www/wwwqqq";
+    verifierRepParent(d);
+    printf("%s", d);
+    return;
+
     verifierDemarage();
     demarerInviteCommande();
     creerFichier("ThisIsATest", "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
@@ -66,9 +72,63 @@ int creerFichiersFichierDemarage(){
 
 //appelle les différentes fonctions du programme
 void analyserLecture(char* lecture){
-    if(!strcmp(lecture, "1")){
-        printf("work");
-    }else if(strstr(lecture, " ") == NULL){
+    if(!strncmp("creation_repertoire ", lecture, 20)){
+
+        printf("\nDebut, creation_repertoire\n");
+        lecture = lecture + 20;
+        printf("\n%s\n", lecture);//
+        if (verifierCheminAbsolu(lecture)
+            && verifierExist(lecture)
+            && verifierRepParent(lecture)){
+            creerRepertoire(lecture);
+        }
+        printf("\nFin, creation_repertoire\n");
+
+    }else if(!strncmp("suppression_repertoire ", lecture, 23)){
+
+        printf("\nDebut, suppression_repertoire\n");
+        lecture = lecture + 23;
+        printf("\n%s\n", lecture);//
+        if (verifierExist(lecture)){
+            supprimerRepertoire(lecture);
+        }
+        printf("\nFin, suppression_repertoire\n");
+
+    }else if(!strncmp("creation_fichier ", lecture, 17)){
+
+        printf("\nDebut, creation_fichier\n");
+        lecture = lecture + 17;
+        printf("\n%s\n", lecture);//
+        if (verifierFicVide(lecture)
+            && verifierExist(lecture)
+            && verifierRepParent(lecture)
+            && verifierFicVolume(lecture)
+            && verifierCheminAbsolu(lecture)){
+            creerFichier(lecture, lecture);
+        }
+        printf("\nFin, creation_fichier\n");
+
+    }else if(!strncmp("suppression_fichier ", lecture, 20)){
+
+        printf("\nDebut, suppression_fichier\n");
+        lecture = lecture + 20;
+        printf("\n%s\n", lecture);//
+        if (verifierExist(lecture)){
+            supprimerFichier(lecture);
+        }
+        printf("\nFin, suppression_fichier\n");
+
+    }else if(!strncmp("lire_fichier ", lecture, 13)){
+
+        printf("\nDebut, lire_fichier\n");
+        lecture = lecture + 13;
+        printf("\n%s\n", lecture);//
+        if (verifierExist(lecture)){
+            lireFichier(lecture);
+        }
+        printf("\nFin, lire_fichier\n");
+
+    }else{
         printf("Commande invalide\n");
     }
 

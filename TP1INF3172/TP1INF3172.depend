@@ -17,3 +17,25 @@
 
 1446854421 e:\gitproject\tp1inf3172\tp1inf3172\include\fichier.h
 
+1446874523 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\errorhandler.c
+	"ErrorHandler.h"
+	"string.h"
+
+1446870570 c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\include\errorhandler.h
+
+1446859618 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\fichier.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<Fichier.h>
+
+1446859618 c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\include\fichier.h
+
+1446874544 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<ErrorHandler.h>
+
+1446871564 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\elementrep.c
+

@@ -14,6 +14,11 @@
 */
 
 
+int verifierCheminAbsolu(char *);
+int verifierExist(char *);
+int verifierRepParent(char *);
+int verifierFicVide(char *);
+int verifierFicVolume(char *);
 
 
 #endif // ERRORHANDLER_H
