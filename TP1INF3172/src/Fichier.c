@@ -18,11 +18,6 @@ void supprimerIndirectionSimple(int positionIndirection);
 void supprimerIndirectionDouble(int positionIndirection);
 void supprimerIndirectionTriple(int positionIndirection);
 
-
-
-
-
-
 int creerRepertoire(char* name){
     return 0;
 }
@@ -56,14 +51,16 @@ int creerFichier(char* name, char* contenue){
             i++;
         }else if(node->indirectionSimple == -1){
             node->indirectionSimple = gestionIndirectionSimple(contenue, &i);
-            printf("l'indirection Simple est : %d\n", node->indirectionSimple);
         }else if(node->indirectionDouble == -1){
             node->indirectionDouble = gestionIndirectionDouble(contenue, &i);
-            printf("l'indirection Double est : %d\n", node->indirectionDouble);
         }else if(node->indirectionTriple == -1){
             node->indirectionTriple = gestionIndirectionTriple(contenue, &i);
-            printf("l'indirection Triple est : %d\n", node->indirectionTriple);
         }
+    }
+    /**set les bloc à -1 pour dire qu'ils sont vide*/
+    while(i<8){
+        node->bloc[i] = -1;
+        i++;
     }
     writeNodeInInodeFile(node);
     free(node);
@@ -123,14 +120,14 @@ int gestionIndirectionDouble(char* contenue, int *position){
         }
         indirectionDouble->bloc[j] = gestionIndirectionSimple(contenue, position);
     }
-    //allocation manuel d'une valeur impossible dans le but de ne pas
-    //laisser le s/e mettre une valeur et corrompre ces données
+    /**allocation manuel d'une valeur impossible dans le but de ne pas
+       laisser le s/e mettre une valeur et corrompre ces données*/
     while(j < 8){
         indirectionDouble->bloc[j] = -1;
         j++;
     }
 
-    //set le bloque libre d'indirection
+    /**set le bloque libre d'indirection*/
     int i = 0;
     while(blocLibreIndirection[i] != 0){
         i++;
@@ -266,26 +263,20 @@ void printInode(int positionInode){
     FILE *fpChaine = fopen("chaine.dat", "rb+");
     for(i = 0 ; i < 8 ; i++){
         if(node.bloc[i] != -1){
-            printf("%d : %d", i, node.bloc[i]);
             fseek(fpChaine, node.bloc[i]*sizeof(char), SEEK_SET);
             fread(&affichage, sizeof(char), 1, fpChaine);
-            printf("le char lu est : %c\n", affichage);
+            printf("%c", affichage);
         }
     }
     fclose(fpChaine);
 
-
     if(node.indirectionSimple != -1){
-        printf("\nl'adresse de l'indirection Simple est : %d\n", node.indirectionSimple);
         printIndirectionSimple(node.indirectionSimple);
     }
     if(node.indirectionDouble != -1){
-
-        printf("\nl'adresse de l'indirection Double est : %d\n", node.indirectionDouble);
         printIndirectionDouble(node.indirectionDouble);
     }
     if(node.indirectionTriple!= -1){
-        printf("\nl'adresse de l'indirection Triple est : %d\n", node.indirectionTriple);
         printIndirectionTriple(node.indirectionTriple);
     }
 }
@@ -302,7 +293,7 @@ void printIndirectionSimple(int indirectionSimplePointeur){
         if(indirectionSimple.bloc[i] != -1){
             fseek(fpChaine, indirectionSimple.bloc[i]*sizeof(char), SEEK_SET);
             fread(&affichage, sizeof(char), 1, fpChaine);
-            printf("le char lu est : %c\n", affichage);
+            printf("%c", affichage);
         }
     }
     fclose(fpChaine);
@@ -378,7 +369,7 @@ void afficheEntierInFileFromPosition(int position){
     fread(&test, sizeof(int), 8, fp);
     int j=0;
     for(j=0; j<8 ; j++){
-        printf("le chifre qui a ete lu est : %d\n", test[j]);
+        printf("%d", test[j]);
     }
 }
 

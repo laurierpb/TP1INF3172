@@ -22,11 +22,18 @@ int main(){
     verifierDemarage();
     demarerInviteCommande();
     creerFichier("ThisIsATest", "1---------1");
-    creerFichier("ThisIsATest", "2-----------2");
+    creerFichier("ThisIsATest", "E");
     supprimerFichier(0);
     creerFichier("ThisIsATest", "3-------------3");
+    creerFichier("ThisIsATest", "4-------------4");
+    creerFichier("ThisIsATest", "5-------------5");
+    creerFichier("ThisIsATest", "6-------------6");
     printInode(0);
     printInode(1);
+    printInode(2);
+    printInode(3);
+    printInode(4);
+    printInode(5);
 
     char lecture[64000];
     int continuer = 1;
