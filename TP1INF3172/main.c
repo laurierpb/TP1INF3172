@@ -12,28 +12,26 @@ char* pathChaine = "chaine.dat";
 char* pathInode = "inode.dat";
 char* pathIndirection = "indirection.dat";
 char* pathBlocLibre = "blocLibre.dat";
+char* pathInodeLibre = "inodeLibre.dat";
+char* pathIndirectionLibre = "indirectionLibre.dat";
 
 int main(){
     /*char * d = "/sfdsf/dsfsdfds/www/wwwqqq";
     verifierRepParent(d);
     printf("%s", d);
     return;
-*/
+    */
     verifierDemarage();
+    loadBlocLibre();
     demarerInviteCommande();
-    creerFichier("ThisIsATest", "1---------1");
+    creerFichier("ThisIsATest", "T---------T");
     creerFichier("ThisIsATest", "E");
-    supprimerFichier(0);
     creerFichier("ThisIsATest", "3-------------3");
     creerFichier("ThisIsATest", "4-------------4");
     creerFichier("ThisIsATest", "5-------------5");
     creerFichier("ThisIsATest", "6-------------6");
+    supprimerFichier(0);
     printInode(0);
-    printInode(1);
-    printInode(2);
-    printInode(3);
-    printInode(4);
-    printInode(5);
 
     char lecture[64000];
     int continuer = 1;
@@ -62,6 +60,10 @@ int verifierDemarage(){
         creerFichiersFichierDemarage();
     }else if(fopen(pathInode, "rb+") == NULL){
         creerFichiersFichierDemarage();
+    }else if(fopen(pathInodeLibre, "rb+") == NULL){
+        creerFichiersFichierDemarage();
+    }else if(fopen(pathIndirectionLibre, "rb+") == NULL){
+        creerFichiersFichierDemarage();
     }
     return 0;
 }
@@ -79,6 +81,10 @@ int creerFichiersFichierDemarage(){
     fclose(fp3);
     FILE *fp4 = fopen(pathBlocLibre, "wb+");
     fclose(fp4);
+    FILE *fp5 = fopen(pathInodeLibre, "wb+");
+    fclose(fp5);
+    FILE *fp6 = fopen(pathIndirectionLibre, "wb+");
+    fclose(fp6);
     return 0;
 }
 
@@ -152,3 +158,4 @@ int demarerInviteCommande(){
     printf("Ecrire 'fin' pour quitter\n");
     return 0;
 }
+

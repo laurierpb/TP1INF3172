@@ -2,7 +2,7 @@
 #define ELEMENTREP_H
 
 typedef struct element{
-    char * chemin;
+    char chemin[40];
     element parent;
     int adresseInode = -1;
 } element;
