@@ -14,11 +14,10 @@ char* pathIndirection = "indirection.dat";
 char* pathBlocLibre = "blocLibre.dat";
 
 int main(){
-    /*char * d = "/sfdsf/dsfsdfds/www/wwwqqq";
+    char * d = "/sfdsf/dsfsdfds/wwwee/wwwqqq";
     verifierRepParent(d);
-    printf("%s", d);
     return;
-*/
+
     verifierDemarage();
     demarerInviteCommande();
     creerFichier("ThisIsATest", "1---------1");
@@ -81,7 +80,7 @@ void analyserLecture(char* lecture){
 
         printf("\nDebut, creation_repertoire\n");
         lecture = lecture + 20;
-        printf("\n%s\n", lecture);//
+        printf("\n%s\n", lecture);
         if (verifierCheminAbsolu(lecture)
             && verifierExist(lecture)
             && verifierRepParent(lecture)){

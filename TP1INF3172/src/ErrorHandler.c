@@ -11,32 +11,30 @@ int verifierCheminAbsolu(char * chemin){
 }
 
 int verifierExist(char * chemin){
+    printf("%s existe", chemin);
+    printf("%s n'existe pas", chemin);
     return 0;
 }
 
 int verifierRepParent(char * chemin){
     char * nom = strrchr(chemin, '/');
+    //nom est vide
     if (!nom){
         return 0;
     }
-
+    // nom = chemin
     if (!strcmp(nom, chemin)){
-        return 1;
+        return verifierExist(nom);
     }
-    char tmp[50];
-    int lenNom = strlen(nom);
-    int len = strlen(tmp);
 
+    char tmp[1000];
+    int lenNom = strlen(nom);
+    int len = strlen(chemin);
     int pos = len - lenNom;
 
     strncpy(tmp, chemin, pos);
 
-   // tmp[pos + 1] = '\0';
-    printf("%s", tmp);
-
-
-
-    return 0;
+    return verifierExist(tmp);
 }
 
 int verifierFicVide(char * chemin){
