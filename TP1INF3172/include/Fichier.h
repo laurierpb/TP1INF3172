@@ -4,7 +4,7 @@
 int blocLibre[64000] = {0};
 
 int blocLibreIndirection[1000] = {0};
-int blocLibreInode[1000] = {0};
+int blocLibreInode[100] = {0};
 int blocLibreFichier[1000] = {0};
 
 typedef struct iNode{
