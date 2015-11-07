@@ -14,15 +14,20 @@ char* pathIndirection = "indirection.dat";
 char* pathBlocLibre = "blocLibre.dat";
 
 int main(){
-    char * d = "/sfdsf/dsfsdfds/www/wwwqqq";
+    /*char * d = "/sfdsf/dsfsdfds/www/wwwqqq";
     verifierRepParent(d);
     printf("%s", d);
     return;
-
+*/
     verifierDemarage();
     demarerInviteCommande();
-    creerFichier("ThisIsATest", "le plus beau est laurier voillon voir si ca marche bien");
-    printInode();
+    creerFichier("ThisIsATest", "1---------1");
+    creerFichier("ThisIsATest", "2-----------2");
+    supprimerFichier(0);
+    creerFichier("ThisIsATest", "3-------------3");
+    printInode(0);
+    printInode(1);
+
     char lecture[64000];
     int continuer = 1;
     while(continuer){

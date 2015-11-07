@@ -33,9 +33,13 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="include/ElementRep.h" />
 		<Unit filename="include/ErrorHandler.h" />
 		<Unit filename="include/Fichier.h" />
 		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="src/ElementRep.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="src/ErrorHandler.c">

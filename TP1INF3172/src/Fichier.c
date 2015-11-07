@@ -11,6 +11,17 @@ void writeNodeInInodeFile(iNode *node);
 void printIndirectionSimple(int indirectionSimple);
 void printIndirectionDouble(int indirectionSimple);
 void printIndirectionTriple(int indirectionSimple);
+void writeCharacterInFile(char charactere, int position);
+void writeBlockEntierInFile(int *bloc, int position);
+void afficheEntierInFileFromPosition(int position);
+void supprimerIndirectionSimple(int positionIndirection);
+void supprimerIndirectionDouble(int positionIndirection);
+void supprimerIndirectionTriple(int positionIndirection);
+
+
+
+
+
 
 int creerRepertoire(char* name){
     return 0;
@@ -39,9 +50,9 @@ int creerFichier(char* name, char* contenue){
         if(i<8){
             writeCharacterInFile(contenue[i], positionInFile);
             node->bloc[positionInode] = positionInFile;
+            blocLibre[positionInFile] = 1;
             positionInFile++;
             positionInode++;
-            blocLibre[i] = 1;
             i++;
         }else if(node->indirectionSimple == -1){
             node->indirectionSimple = gestionIndirectionSimple(contenue, &i);
@@ -169,16 +180,74 @@ int gestionIndirectionTriple(char* contenue, int *position){
     return i;
 }
 
-int supprimerFichier(char* name){
+int supprimerFichier(int positionInode){
+    struct iNode node;
+    FILE *fp = fopen("inode.dat", "rb+");
+    fseek(fp, positionInode*sizeof(struct iNode), SEEK_SET);
+    fread(&node, sizeof(struct iNode), 1, fp);
+    fclose(fp);
+    /**Liberation de l'espace memoire de l'inode*/
+    blocLibreInode[positionInode] = 0;
+    /**Liberation des bloc dans l'inode*/
+    int i = 0;
+    while(i<8 && node.bloc[i] != -1){
+        blocLibre[node.bloc[i]] = 0;
+        i++;
+    }
+    /**liberation de l'espace memoire des indirection*/
+    if(node.indirectionSimple != -1){
+        supprimerIndirectionSimple(node.indirectionSimple);
+    }
+    if(node.indirectionDouble != -1){
+        supprimerIndirectionDouble(node.indirectionTriple);
+    }
+    if(node.indirectionTriple != -1){
+        supprimerIndirectionTriple(node.indirectionTriple);
+    }
     return 0;
+}
+void supprimerIndirectionSimple(int positionIndirection){
+    struct indirection indirectionSimple;
+    FILE *fp = fopen("indirection.dat", "rb+");
+    fseek(fp, positionIndirection*sizeof(struct indirection), SEEK_SET);
+    fread(&indirectionSimple, sizeof(struct indirection), 1, fp);
+    fclose(fp);
+    int i = 0;
+    while(i<8 && indirectionSimple.bloc[i] != -1){
+        blocLibre[indirectionSimple.bloc[i]] = 0;
+        i++;
+    }
+}
+void supprimerIndirectionDouble(int positionIndirection){
+    struct indirection indirectionDouble;
+    FILE *fp = fopen("indirection.dat", "rb+");
+    fseek(fp, positionIndirection*sizeof(struct indirection), SEEK_SET);
+    fread(&indirectionDouble, sizeof(struct indirection), 1, fp);
+    fclose(fp);
+    int i = 0;
+    while(i<8 && indirectionDouble.bloc[i] != -1){
+            supprimerIndirectionSimple(indirectionDouble.bloc[i]);
+            i++;
+    }
+}
+void supprimerIndirectionTriple(int positionIndirection){
+    struct indirection indirectionTriple;
+    FILE *fp = fopen("indirection.dat", "rb+");
+    fseek(fp, positionIndirection*sizeof(struct indirection), SEEK_SET);
+    fread(&indirectionTriple, sizeof(struct indirection), 1, fp);
+    fclose(fp);
+    int i = 0;
+    while(i<8 && indirectionTriple.bloc[i] != -1){
+            supprimerIndirectionDouble(indirectionTriple.bloc[i]);
+            i++;
+    }
 }
 
 int lireFichier(char* name){
     return 0;
 }
 
-void printInode(){
-    int positionInode = 0;
+void printInode(int positionInode){
     struct iNode node;
     int i;
     for(i = 0 ; i < 8 ; i++){

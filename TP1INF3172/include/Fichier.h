@@ -21,8 +21,9 @@ typedef struct indirection{
 int creerRepertoire(char* name);
 int supprimerRepertoire(char* name);
 int creerFichier(char* name, char* contenu);
-int supprimerFichier(char* name);
+int supprimerFichier(int positionInode);
 int lireFichier(char* name);
+void printInode(int position);
 iNode* populateInode();
 
 #endif // FICHIER_H
