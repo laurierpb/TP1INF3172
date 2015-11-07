@@ -27,16 +27,16 @@ void writeBlocLibreInFile();
 *   Section à faire
 *
 */
-int creerRepertoire(char* name){
-    return 0;
-}
-int supprimerRepertoire(char* name){
-    return 0;
-}
 int creerFichier(char* name, char* contenue){
     return creerInode(contenue);
 }
 int lireFichier(char* name){
+    return 0;
+}
+int creerRepertoire(char* name){
+    return 0;
+}
+int supprimerRepertoire(char* name){
     return 0;
 }
 /**
