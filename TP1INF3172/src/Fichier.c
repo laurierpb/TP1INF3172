@@ -3,12 +3,14 @@
 #include <string.h>
 #include <Fichier.h>
 
-void printInode(struct iNode *node);
 void writeCharacterInFile(char charactere, int position);
 int gestionIndirectionSimple(char* contenue, int *position);
 int gestionIndirectionDouble(char* contenue, int *position);
 int gestionIndirectionTriple(char* contenue, int *position);
 void writeNodeInInodeFile(iNode *node);
+void printIndirectionSimple(int indirectionSimple);
+void printIndirectionDouble(int indirectionSimple);
+void printIndirectionTriple(int indirectionSimple);
 
 int creerRepertoire(char* name){
     return 0;
@@ -36,71 +38,25 @@ int creerFichier(char* name, char* contenue){
         }
         if(i<8){
             writeCharacterInFile(contenue[i], positionInFile);
-            positionInFile++;
             node->bloc[positionInode] = positionInFile;
+            positionInFile++;
             positionInode++;
             blocLibre[i] = 1;
             i++;
         }else if(node->indirectionSimple == -1){
             node->indirectionSimple = gestionIndirectionSimple(contenue, &i);
+            printf("l'indirection Simple est : %d\n", node->indirectionSimple);
         }else if(node->indirectionDouble == -1){
             node->indirectionDouble = gestionIndirectionDouble(contenue, &i);
+            printf("l'indirection Double est : %d\n", node->indirectionDouble);
         }else if(node->indirectionTriple == -1){
             node->indirectionTriple = gestionIndirectionTriple(contenue, &i);
+            printf("l'indirection Triple est : %d\n", node->indirectionTriple);
         }
     }
     writeNodeInInodeFile(node);
     free(node);
     return 0;
-}
-
-int supprimerFichier(char* name){
-    return 0;
-}
-
-int lireFichier(char* name){
-    return 0;
-}
-
-void writeNodeInInodeFile(iNode *node){
-    int position = 0;
-    while(blocLibreInode[position] != 0){
-        position++;
-    }
-    blocLibreInode[position] = 1;
-
-    FILE *fp = fopen("inode.dat", "rb+");
-    fwrite(blocLibreInode, sizeof(blocLibreInode), 1, fp);
-    fseek(fp, position + sizeof(blocLibreInode)/sizeof(blocLibreInode[1]), SEEK_SET);
-    fwrite(&node, sizeof(iNode), 1, fp);
-    fclose(fp);
-}
-
-void writeCharacterInFile(char charactere, int position){
-    FILE *fp = fopen("chaine.dat", "rb+");
-    fseek(fp, position, SEEK_SET);
-    fwrite(&charactere, sizeof(charactere), 1, fp);
-    fclose(fp);
-}
-
-void writeBlockEntierInFile(int *bloc, int position){
-    FILE *fp = fopen("indirection.dat", "rb+");
-    fseek(fp, position*sizeof(int) +
-          sizeof(blocLibreIndirection)/sizeof(blocLibreIndirection[0]), SEEK_SET);
-    fwrite(bloc, sizeof(int), 8, fp);
-    fclose(fp);
-}
-
-void afficheEntierInFileFromPosition(int position){
-    int test[8];
-    FILE *fp = fopen("indirection.dat", "rb+");
-    fseek(fp, position * sizeof(int) +
-          sizeof(blocLibreIndirection)/sizeof(blocLibreIndirection[0]), SEEK_SET);
-    fread(&test, sizeof(int), 8, fp);
-    int j=0;
-    for(j=0; j<8 ; j++){
-        printf("le chifre qui a ete lu est : %d\n", test[j]);
-    }
 }
 
 /**
@@ -121,6 +77,7 @@ int gestionIndirectionSimple(char* contenue, int *position){
         blocLibre[positionBlocLibre] = 1;
         positionInode++;
         if(positionInode == 8){
+            *position = *position + 1;
             break;
         }
     }
@@ -138,6 +95,7 @@ int gestionIndirectionSimple(char* contenue, int *position){
 
     blocLibreIndirection[i] = 1;
     writeBlockEntierInFile(indirectionSimple->bloc, i);
+    free(indirectionSimple);
     return i;
 }
 
@@ -167,10 +125,12 @@ int gestionIndirectionDouble(char* contenue, int *position){
         i++;
     }
     if(indirectionDouble->bloc[0] == -1){
+        free(indirectionDouble);
         return -1;
     }
     writeBlockEntierInFile(indirectionDouble->bloc, i);
     blocLibreIndirection[i] = 1;
+    free(indirectionDouble);
     return i;
 }
 
@@ -200,9 +160,157 @@ int gestionIndirectionTriple(char* contenue, int *position){
         i++;
     }
     if(indirectionTriple->bloc[0] == -1){
+        free(indirectionTriple);
         return -1;
     }
     writeBlockEntierInFile(indirectionTriple->bloc, i);
     blocLibreIndirection[i] = 1;
+    free(indirectionTriple);
     return i;
 }
+
+int supprimerFichier(char* name){
+    return 0;
+}
+
+int lireFichier(char* name){
+    return 0;
+}
+
+void printInode(){
+    int positionInode = 0;
+    struct iNode node;
+    int i;
+    for(i = 0 ; i < 8 ; i++){
+        node.bloc[i] = -1;
+    }
+    node.indirectionSimple=-1;
+    node.indirectionDouble=-1;
+    node.indirectionTriple=-1;
+
+    FILE *fp = fopen("inode.dat", "rb+");
+    fseek(fp, positionInode*sizeof(struct iNode), SEEK_SET);
+    fread(&node, sizeof(struct iNode), 1, fp);
+    fclose(fp);
+
+    char affichage;
+    FILE *fpChaine = fopen("chaine.dat", "rb+");
+    for(i = 0 ; i < 8 ; i++){
+        if(node.bloc[i] != -1){
+            printf("%d : %d", i, node.bloc[i]);
+            fseek(fpChaine, node.bloc[i]*sizeof(char), SEEK_SET);
+            fread(&affichage, sizeof(char), 1, fpChaine);
+            printf("le char lu est : %c\n", affichage);
+        }
+    }
+    fclose(fpChaine);
+
+
+    if(node.indirectionSimple != -1){
+        printf("\nl'adresse de l'indirection Simple est : %d\n", node.indirectionSimple);
+        printIndirectionSimple(node.indirectionSimple);
+    }
+    if(node.indirectionDouble != -1){
+
+        printf("\nl'adresse de l'indirection Double est : %d\n", node.indirectionDouble);
+        printIndirectionDouble(node.indirectionDouble);
+    }
+    if(node.indirectionTriple!= -1){
+        printf("\nl'adresse de l'indirection Triple est : %d\n", node.indirectionTriple);
+        printIndirectionTriple(node.indirectionTriple);
+    }
+}
+void printIndirectionSimple(int indirectionSimplePointeur){
+    struct indirection indirectionSimple;
+    FILE *fp = fopen("indirection.dat", "rb+");
+    fseek(fp, indirectionSimplePointeur*sizeof(struct indirection), SEEK_SET);
+    fread(&indirectionSimple, sizeof(struct indirection), 1, fp);
+    fclose(fp);
+    int i;
+    char affichage;
+    FILE *fpChaine = fopen("chaine.dat", "rb+");
+    for(i = 0 ; i < 8 && indirectionSimple.bloc[i] !=  -1; i++){
+        if(indirectionSimple.bloc[i] != -1){
+            fseek(fpChaine, indirectionSimple.bloc[i]*sizeof(char), SEEK_SET);
+            fread(&affichage, sizeof(char), 1, fpChaine);
+            printf("le char lu est : %c\n", affichage);
+        }
+    }
+    fclose(fpChaine);
+}
+void printIndirectionDouble(int indirectionDoublePointeur){
+    struct indirection indirectionDouble;
+    FILE *fp = fopen("indirection.dat", "rb+");
+    fseek(fp, indirectionDoublePointeur*sizeof(struct indirection), SEEK_SET);
+    fread(&indirectionDouble, sizeof(struct indirection), 1, fp);
+    fclose(fp);
+    int j;
+    for(j = 0 ; j < 8 ; j++){
+        if(indirectionDouble.bloc[j] != -1){
+            printIndirectionSimple(indirectionDouble.bloc[j]);
+        }
+    }
+}
+void printIndirectionTriple(int indirectionTriplePointeur){
+    struct indirection indirectionTriple;
+    FILE *fp = fopen("indirection.dat", "rb+");
+    fseek(fp, indirectionTriplePointeur*sizeof(struct indirection), SEEK_SET);
+    fread(&indirectionTriple, sizeof(struct indirection), 1, fp);
+    fclose(fp);
+    int j;
+    for(j = 0 ; j < 8 ; j++){
+        if(indirectionTriple.bloc[j] != -1){
+            printIndirectionDouble(indirectionTriple.bloc[j]);
+        }
+    }
+}
+void writeNodeInInodeFile(iNode *node){
+    int position = 0;
+    while(blocLibreInode[position] != 0){
+        position++;
+    }
+    printf("la position d'ecriture est %d\n", position*sizeof(iNode));
+    int i;
+    for(i = 0 ; i < 8 ; i++){
+        printf("le nombre ecrit est : %d\n", node->bloc[i]);
+    }
+    printf("l'indirection Simple est : %d\n", node->indirectionSimple);
+    printf("l'indirection Double est : %d\n", node->indirectionDouble);
+    printf("l'indirection Triple est : %d\n\n", node->indirectionTriple);
+
+    blocLibreInode[position] = 1;
+
+    FILE *fp = fopen("inode.dat", "rb+");
+    fseek(fp, position*sizeof(struct iNode), SEEK_SET);
+    fwrite(node, sizeof(struct iNode), 1, fp);
+
+    fclose(fp);
+}
+
+void writeCharacterInFile(char charactere, int position){
+    FILE *fp = fopen("chaine.dat", "rb+");
+    fseek(fp, position, SEEK_SET);
+    fwrite(&charactere, sizeof(charactere), 1, fp);
+    fclose(fp);
+}
+
+void writeBlockEntierInFile(int *bloc, int position){
+    FILE *fp = fopen("indirection.dat", "rb+");
+    fseek(fp, position*sizeof(indirection), SEEK_SET);
+    fwrite(bloc, sizeof(indirection), 1, fp);
+    fclose(fp);
+}
+
+void afficheEntierInFileFromPosition(int position){
+    int test[8];
+    FILE *fp = fopen("indirection.dat", "rb+");
+    fseek(fp, position * sizeof(int) +
+          sizeof(blocLibreIndirection)/sizeof(blocLibreIndirection[0]), SEEK_SET);
+    fread(&test, sizeof(int), 8, fp);
+    int j=0;
+    for(j=0; j<8 ; j++){
+        printf("le chifre qui a ete lu est : %d\n", test[j]);
+    }
+}
+
+

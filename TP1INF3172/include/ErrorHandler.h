@@ -13,7 +13,7 @@
 * le fichier n'existe pas
 */
 
-
+int validationNomFichier(char* nomFichier);
 
 
 #endif // ERRORHANDLER_H
