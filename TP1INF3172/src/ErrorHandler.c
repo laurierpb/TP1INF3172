@@ -1,5 +1,5 @@
 #include "ErrorHandler.h"
-#include "string.h"
+#include <string.h>
 
 
 int verifierCheminAbsolu(char * chemin){

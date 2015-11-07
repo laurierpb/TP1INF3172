@@ -1,31 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <Fichier.h>
+#include "Fichier.h"
 
-void writeCharacterInFile(char charactere, int position);
-int gestionIndirectionSimple(char* contenue, int *position);
-int gestionIndirectionDouble(char* contenue, int *position);
-int gestionIndirectionTriple(char* contenue, int *position);
-int writeNodeInInodeFile(iNode *node);
-int creerInode(char* contenue);
-void printIndirectionSimple(int indirectionSimple);
-void printIndirectionDouble(int indirectionSimple);
-void printIndirectionTriple(int indirectionSimple);
-void writeCharacterInFile(char charactere, int position);
-void writeBlockEntierInFile(int *bloc, int position);
-void afficheEntierInFileFromPosition(int position);
 void supprimerIndirectionSimple(int positionIndirection);
 void supprimerIndirectionDouble(int positionIndirection);
 void supprimerIndirectionTriple(int positionIndirection);
+int creerInode(char* contenue);
+void printInode(int positionInode);
+void printIndirectionSimple(int indirectionSimplePointeur);
+void printIndirectionDouble(int indirectionDoublePointeur);
+void printIndirectionTriple(int indirectionTriplePointeur);
+int writeNodeInInodeFile(iNode *node);
+void writeCharacterInFile(char charactere, int position);
+void writeBlockEntierInFile(int *bloc, int position);
+void afficheEntierInFileFromPosition(int position);
 void writeInodeLibreInFile();
 void writeIndirectionLibreInFile();
 void writeBlocLibreInFile();
-
+void writeFichierLibreInFile();
+int gestionIndirectionSimple(char* contenue, int *position);
+int gestionIndirectionDouble(char* contenue, int *position);
+int gestionIndirectionTriple(char* contenue, int *position);
+int blocLibre[64000] = {0};
+int blocLibreIndirection[1000] = {0};
+int blocLibreInode[1000] = {0};
+int blocLibreFichier[1000] = {0};
 
 /***********************************
 *   Section à faire
-*
 */
 int creerFichier(char* name, char* contenue){
     return creerInode(contenue);
@@ -395,6 +397,12 @@ void writeIndirectionLibreInFile(){
     fclose(fp);
 }
 void writeBlocLibreInFile(){
+    FILE *fp = fopen("blocLibre.dat", "rb+");
+    fseek(fp, 0, SEEK_SET);
+    fwrite(blocLibre, sizeof(blocLibre), 1, fp);
+    fclose(fp);
+}
+void writeFichierLibreInFile(){
     FILE *fp = fopen("blocLibre.dat", "rb+");
     fseek(fp, 0, SEEK_SET);
     fwrite(blocLibre, sizeof(blocLibre), 1, fp);

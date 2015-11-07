@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ErrorHandler.h>
+#include "ErrorHandler.h"
+#include "Fichier.h"
 
 int verifierDemarage();
 int creerFichiersFichierDemarage();
@@ -11,20 +12,22 @@ void analyserLecture(char* lecture);
 char* pathChaine = "chaine.dat";
 char* pathInode = "inode.dat";
 char* pathIndirection = "indirection.dat";
+char* pathRepertoire= "repertoire.dat";
+
 char* pathBlocLibre = "blocLibre.dat";
 char* pathInodeLibre = "inodeLibre.dat";
 char* pathIndirectionLibre = "indirectionLibre.dat";
+char* pathRepertoireLibre = "repertoireLibre.dat";
 
 int main(){
     char * d = "/sfdsf/dsfsdfds/wwwee/wwwqqq";
     verifierRepParent(d);
-    return;
 
     verifierDemarage();
     loadBlocLibre();
     demarerInviteCommande();
 
-    char lecture[64000];
+    char lecture[1000];
     int continuer = 1;
     while(continuer){
         fgets(lecture, sizeof(lecture), stdin);
@@ -76,6 +79,10 @@ int creerFichiersFichierDemarage(){
     fclose(fp5);
     FILE *fp6 = fopen(pathIndirectionLibre, "wb+");
     fclose(fp6);
+    FILE *fp7 = fopen(pathRepertoireLibre, "wb+");
+    fclose(fp7);
+    FILE *fp8 = fopen(pathRepertoire, "wb+");
+    fclose(fp8);
     return 0;
 }
 
@@ -123,7 +130,7 @@ void analyserLecture(char* lecture){
         lecture = lecture + 20;
         printf("\n%s\n", lecture);//
         if (verifierExist(lecture)){
-            supprimerFichier(lecture);
+            supprimerRepertoire(lecture);
         }
         printf("\nFin, suppression_fichier\n");
 
