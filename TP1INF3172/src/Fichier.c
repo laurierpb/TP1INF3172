@@ -36,6 +36,9 @@ int supprimerRepertoire(char* name){
 int creerFichier(char* name, char* contenue){
     return creerInode(contenue);
 }
+int lireFichier(char* name){
+    return 0;
+}
 /**
 *   Section à faire fin
 *********************************/
@@ -194,7 +197,6 @@ int gestionIndirectionTriple(char* contenue, int *position){
     free(indirectionTriple);
     return i;
 }
-
 int supprimerFichier(int positionInode){
     struct iNode node;
     FILE *fp = fopen("inode.dat", "rb+");
@@ -260,11 +262,6 @@ void supprimerIndirectionTriple(int positionIndirection){
             i++;
     }
 }
-
-int lireFichier(char* name){
-    return 0;
-}
-
 void printInode(int positionInode){
     if(blocLibreInode[positionInode] == 0){
         return;
@@ -362,21 +359,18 @@ int writeNodeInInodeFile(iNode *node){
     fclose(fp);
     return position;
 }
-
 void writeCharacterInFile(char charactere, int position){
     FILE *fp = fopen("chaine.dat", "rb+");
     fseek(fp, position, SEEK_SET);
     fwrite(&charactere, sizeof(char), 1, fp);
     fclose(fp);
 }
-
 void writeBlockEntierInFile(int *bloc, int position){
     FILE *fp = fopen("indirection.dat", "rb+");
     fseek(fp, position*sizeof(indirection), SEEK_SET);
     fwrite(bloc, sizeof(indirection), 1, fp);
     fclose(fp);
 }
-
 void afficheEntierInFileFromPosition(int position){
     int test[8];
     FILE *fp = fopen("indirection.dat", "rb+");
@@ -400,14 +394,12 @@ void writeIndirectionLibreInFile(){
     fwrite(blocLibreIndirection, sizeof(blocLibreIndirection), 1, fp);
     fclose(fp);
 }
-
 void writeBlocLibreInFile(){
     FILE *fp = fopen("blocLibre.dat", "rb+");
     fseek(fp, 0, SEEK_SET);
     fwrite(blocLibre, sizeof(blocLibre), 1, fp);
     fclose(fp);
 }
-
 void loadBlocLibre(){
     FILE *fp = fopen("indirectionLibre.dat", "rb+");
     fseek(fp, 0, SEEK_SET);

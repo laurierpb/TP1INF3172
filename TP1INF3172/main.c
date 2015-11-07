@@ -27,14 +27,6 @@ int main(){
     verifierDemarage();
     loadBlocLibre();
     demarerInviteCommande();
-    creerFichier("ThisIsATest", "T---------T");
-    creerFichier("ThisIsATest", "E");
-    creerFichier("ThisIsATest", "3-------------3");
-    creerFichier("ThisIsATest", "4-------------4");
-    creerFichier("ThisIsATest", "5-------------5");
-    creerFichier("ThisIsATest", "6-------------6");
-    supprimerFichier(0);
-    printInode(0);
 
     char lecture[64000];
     int continuer = 1;
