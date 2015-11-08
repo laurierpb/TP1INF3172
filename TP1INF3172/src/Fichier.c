@@ -28,9 +28,9 @@ int writeRepertoireInFile(element *element);
 void supprimerEnfant(int adresseParent);
 
 int blocLibre[64000] = {0};
-int blocLibreIndirection[1000] = {0};
-int blocLibreInode[1000] = {0};
-int blocLibreRepertoire[1000] = {0};
+int blocLibreIndirection[64000] = {0};
+int blocLibreInode[64000] = {0};
+int blocLibreRepertoire[64000] = {0};
 
 /**return -1 si le fichier existe deja*/
 int creerFichier(char* name, char* contenue){
@@ -38,7 +38,28 @@ int creerFichier(char* name, char* contenue){
     if(getAdressRepertoire(name) != -1){
         return -1;
     }
-
+    /**Regarde si il reste de la place pour lo stoquer*/
+    int k;
+    for(k = 0 ; k < sizeof(blocLibreRepertoire)/sizeof(blocLibreRepertoire[1]) ; k++){
+        if(blocLibreRepertoire[k] == 0){
+            break;
+        }
+    }
+    if(k == sizeof(blocLibreRepertoire)/sizeof(blocLibreRepertoire[1])){
+        printf("il n'y a plus d'espace pour gerer ce repertoire");
+        return -1;
+    }
+    /**regarde si il y a de la place pour stoquer le contenu*/
+    int compteur = 0;
+    for(k = 0 ; k < sizeof(blocLibre)/sizeof(blocLibre[1]) ; k++){
+        if(blocLibre[k] == 0){
+            compteur ++;
+        }
+    }
+    if(compteur < strlen(contenue)){
+        printf("il n'y a plus d'espace pour gerer ce fichier");
+        return -1;
+    }
     /**Creation du nom du fichier parent*/
     char nomFichierParent[40] = {'\0'};
     /**calcul de la longeur du char name*/
@@ -99,6 +120,17 @@ int lireFichier(char* name){
 }
 
 int creerRepertoire(char* name){
+    /**Regarde si il reste de la place pour lo stoquer*/
+    int k;
+    for(k = 0 ; k < sizeof(blocLibreRepertoire)/sizeof(blocLibreRepertoire[1]) ; k++){
+        if(blocLibreRepertoire[k] == 0){
+            break;
+        }
+    }
+    if(k == sizeof(blocLibreRepertoire)/sizeof(blocLibreRepertoire[1])){
+        printf("il n'y a plus d'espace pour gerer ce repertoire");
+        return -1;
+    }
     /**Si le fichier existe deja on retourne -1*/
     if(getAdressRepertoire(name) != -1){
         return -1;
@@ -187,6 +219,10 @@ void supprimerEnfant(int adresseParent){
 }
 
 int creerInode(char* contenue){
+
+
+
+
     iNode *node = malloc(sizeof(iNode));
     node->indirectionSimple = -1;
     node->indirectionDouble = -1;
