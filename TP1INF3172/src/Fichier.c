@@ -26,6 +26,7 @@ int getAdressRepertoire(char* nomFichier);
 void initialiseElement(element *repertoire);
 void writeRepertoireLibreInFile();
 int writeRepertoireInFile(element *element);
+void supprimerEnfant(int adresseParent);
 
 int blocLibre[64000] = {0};
 int blocLibreIndirection[1000] = {0};
@@ -47,10 +48,9 @@ int creerFichier(char* name, char* contenue){
         i++;
     }
     int longeurName = i;
-    while(name[longeurName-1] != '/'){
+    while(name[longeurName] != '/' && i > 0){
         longeurName--;
     }
-    longeurName--;
     for(i = 0 ; i < longeurName ; i++){
         nomFichierParent[i] = name[i];
     }
@@ -60,6 +60,7 @@ int creerFichier(char* name, char* contenue){
     initialiseElement(elementInsertion);
 
     if(nomFichierParent[0] == '\0'){
+        /**Cele veut dire que le fichier est un root*/
         elementInsertion->parent = -1;
     }else{
         elementInsertion->parent = getAdressRepertoire(nomFichierParent);
@@ -68,33 +69,110 @@ int creerFichier(char* name, char* contenue){
             return -1;
         }
     }
-
+    /**creation du nom du fichier*/
     for(i = 0 ; name[i] != '\0' ; i++){
         elementInsertion->chemin[i] = name[i];
     }
 
     elementInsertion->adresseInode = creerInode(contenue);
-    writeRepertoireInFile(elementInsertion);
-    int j=0;
-    while(blocLibreRepertoire[j] == 1){
-        j++;
+    int retour = writeRepertoireInFile(elementInsertion);
+    writeRepertoireLibreInFile();
+    return retour;
+}
+
+int lireFichier(char* name){
+    int positionDansFichier = getAdressRepertoire(name);
+    struct element elementAfficher;
+    FILE *fp = fopen("repertoire.dat","rb+");
+    fseek(fp, positionDansFichier*sizeof(struct element), SEEK_SET);
+    fread(&elementAfficher, positionDansFichier * sizeof(struct element), 1, fp);
+    fclose(fp);
+    if(elementAfficher.adresseInode == -1){
+        return -1;
+    }
+    printInode(elementAfficher.adresseInode);
+    return 0;
+}
+
+int creerRepertoire(char* name){
+    /**Si le fichier existe deja on retourne -1*/
+    if(getAdressRepertoire(name) != -1){
+        return -1;
     }
 
-    blocLibreRepertoire[j] = 1;
+    /**Creation du nom du fichier parent*/
+    char nomFichierParent[40] = {'\0'};
+    /**calcul de la longeur du char name*/
+    int i = 0;
+    while(name[i] != '\0'){
+        i++;
+    }
+    int longeurName = i;
+    while(name[longeurName] != '/' && i > 0){
+        longeurName--;
+    }
+    for(i = 0 ; i < longeurName ; i++){
+        nomFichierParent[i] = name[i];
+    }
+
+
+    struct element *elementInsertion = malloc(sizeof(element));
+    initialiseElement(elementInsertion);
+
+    if(nomFichierParent[0] == '\0'){
+        /**Cele veut dire que le fichier est un root*/
+        elementInsertion->parent = -1;
+    }else{
+        elementInsertion->parent = getAdressRepertoire(nomFichierParent);
+        if(elementInsertion->parent == -1){
+            /**Cele veut dire que le parent n'existe pas et donc c'est une erreur*/
+            free(elementInsertion);
+            return -1;
+        }
+    }
+    /**creation du nom du fichier*/
+    for(i = 0 ; name[i] != '\0' ; i++){
+        elementInsertion->chemin[i] = name[i];
+    }
+
+    elementInsertion->adresseInode = -1;
+    int retour = writeRepertoireInFile(elementInsertion);
     writeRepertoireLibreInFile();
-    return j;
-}
-int lireFichier(char* name){
-    return 0;
-}
-int creerRepertoire(char* name){
-    return 0;
+    return retour;
 }
 int supprimerRepertoire(char* name){
+    int positionDansFichier = getAdressRepertoire(name);
+    struct element elementSupprimer;
+    FILE *fp = fopen("repertoire.dat","rb+");
+    fseek(fp, positionDansFichier*sizeof(struct element), SEEK_SET);
+    fread(&elementSupprimer, positionDansFichier * sizeof(struct element), 1, fp);
+    fclose(fp);
+    blocLibreRepertoire[positionDansFichier] = 0;
+    if(elementSupprimer.adresseInode != -1){
+        supprimerFichier(elementSupprimer.adresseInode);
+    }
+    supprimerEnfant(positionDansFichier);
     return 0;
 }
 
-
+void supprimerEnfant(int adresseParent){
+    int i;
+    struct element elementSupprimer;
+    FILE *fp = fopen("repertoire.dat","rb+");
+    for(i = 0 ; i < sizeof(blocLibreRepertoire)/sizeof(int) ; i++){
+        while(blocLibreRepertoire[i] != 1 && i < sizeof(blocLibreRepertoire)/sizeof(int)){
+            i++;
+        }
+        fseek(fp, i*sizeof(struct element), SEEK_SET);
+        fread(&elementSupprimer, i * sizeof(struct element), 1, fp);
+        if(elementSupprimer.parent == adresseParent){
+            blocLibreRepertoire[i] = 0;
+            supprimerFichier(elementSupprimer.adresseInode);
+            supprimerEnfant(i);
+        }
+    }
+    fclose(fp);
+}
 
 int creerInode(char* contenue){
     iNode *node = malloc(sizeof(iNode));
