@@ -20,9 +20,9 @@ char* pathIndirectionLibre = "indirectionLibre.dat";
 char* pathRepertoireLibre = "repertoireLibre.dat";
 
 int main(){
-    char * d = "/sfdsf/dsfsdfds/wwwee/wwwqqq";
-    verifierRepParent(d);
-
+    char * d = "/sfdsf/dsfsdfds/wwwee/wwwqqqff ff";
+    verifierFicLongueur(d);
+    return;
     verifierDemarage();
     loadBlocLibre();
     demarerInviteCommande();
@@ -115,10 +115,9 @@ void analyserLecture(char* lecture){
         printf("\nDebut, creation_fichier\n");
         lecture = lecture + 17;
         printf("\n%s\n", lecture);//
-        if (verifierFicVide(lecture)
+        if (verifierFicLongueur(lecture)
             && verifierExist(lecture)
             && verifierRepParent(lecture)
-            && verifierFicVolume(lecture)
             && verifierCheminAbsolu(lecture)){
             creerFichier(lecture, lecture);
         }

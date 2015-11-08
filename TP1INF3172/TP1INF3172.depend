@@ -19,25 +19,25 @@
 
 1446926744 e:\gitproject\tp1inf3172\tp1inf3172\include\fichier.h
 
-1446916155 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\errorhandler.c
+1446949382 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\errorhandler.c
 	"ErrorHandler.h"
-	"string.h"
+	<string.h>
 
-1446914868 c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\include\errorhandler.h
+1446949204 c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\include\errorhandler.h
 
-1446913281 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\fichier.c
+1446936839 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\fichier.c
+	<stdio.h>
+	<stdlib.h>
+	"Fichier.h"
+
+1446936838 c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\include\fichier.h
+
+1446949282 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
-	<Fichier.h>
-
-1446913281 c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\include\fichier.h
-
-1446915756 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\main.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	<ErrorHandler.h>
+	"ErrorHandler.h"
+	"Fichier.h"
 
 1446871564 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\elementrep.c
 

@@ -37,10 +37,17 @@ int verifierRepParent(char * chemin){
     return verifierExist(tmp);
 }
 
-int verifierFicVide(char * chemin){
-    return 0;
-}
-
-int verifierFicVolume(char * chemin){
-    return 0;
+int verifierFicLongueur(char * chemin){
+    char * contenu = strchr(chemin, ' ');
+    if (!contenu || !contenu[1]){
+        printf("Le contenu du fichier ne peut pas etre vide");
+        return 0;
+    }
+    contenu++;
+    int len = strlen(contenu);
+    if (len > 3){
+        printf("La longueur du contenu du fichier ne peut pas etre superieur a 500");
+        return 0;
+    }
+    return 1;
 }
