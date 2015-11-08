@@ -20,6 +20,8 @@ char* pathIndirectionLibre = "indirectionLibre.dat";
 char* pathRepertoireLibre = "repertoireLibre.dat";
 
 int main(){
+
+
     char * d = "/sfdsf/dsfsdfds/wwwee/wwwqqq";
     verifierRepParent(d);
 
@@ -27,6 +29,9 @@ int main(){
     loadBlocLibre();
     demarerInviteCommande();
 
+    creerFichier("wtv/tes/test","this is a testin");
+    printInode(1);
+/*
     char lecture[1000];
     int continuer = 1;
     while(continuer){
@@ -40,6 +45,7 @@ int main(){
             analyserLecture(lecture);
         }
     }
+    */
     return 0;
 }
 
@@ -57,6 +63,10 @@ int verifierDemarage(){
     }else if(fopen(pathInodeLibre, "rb+") == NULL){
         creerFichiersFichierDemarage();
     }else if(fopen(pathIndirectionLibre, "rb+") == NULL){
+        creerFichiersFichierDemarage();
+    }else if(fopen(pathRepertoire, "rb+") == NULL){
+        creerFichiersFichierDemarage();
+    }else if(fopen(pathRepertoireLibre, "rb+") == NULL){
         creerFichiersFichierDemarage();
     }
     return 0;
