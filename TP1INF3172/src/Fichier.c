@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "Fichier.h"
 
 void supprimerIndirectionSimple(int positionIndirection);
@@ -21,30 +22,157 @@ void writeFichierLibreInFile();
 int gestionIndirectionSimple(char* contenue, int *position);
 int gestionIndirectionDouble(char* contenue, int *position);
 int gestionIndirectionTriple(char* contenue, int *position);
+int getAdressRepertoire(char* nomFichier);
+void initialiseElement(element *repertoire);
+void writeRepertoireLibreInFile();
+int writeRepertoireInFile(element *element);
+void supprimerEnfant(int adresseParent);
+
 int blocLibre[64000] = {0};
 int blocLibreIndirection[1000] = {0};
 int blocLibreInode[1000] = {0};
-int blocLibreFichier[1000] = {0};
+int blocLibreRepertoire[1000] = {0};
 
-/***********************************
-*   Section à faire
-*/
+/**return -1 si le fichier existe deja*/
 int creerFichier(char* name, char* contenue){
-    return creerInode(contenue);
+    /**Si le fichier existe deja on retourne -1*/
+    if(getAdressRepertoire(name) != -1){
+        return -1;
+    }
+
+    /**Creation du nom du fichier parent*/
+    char nomFichierParent[40] = {'\0'};
+    /**calcul de la longeur du char name*/
+    int i = 0;
+    while(name[i] != '\0'){
+        i++;
+    }
+    int longeurName = i;
+    while(name[longeurName] != '/' && i > 0){
+        longeurName--;
+    }
+    for(i = 0 ; i < longeurName ; i++){
+        nomFichierParent[i] = name[i];
+    }
+
+
+    struct element *elementInsertion = malloc(sizeof(element));
+    initialiseElement(elementInsertion);
+
+    if(nomFichierParent[0] == '\0'){
+        /**Cele veut dire que le fichier est un root*/
+        elementInsertion->parent = -1;
+    }else{
+        elementInsertion->parent = getAdressRepertoire(nomFichierParent);
+        if(elementInsertion->parent == -1){
+            free(elementInsertion);
+            return -1;
+        }
+    }
+    /**creation du nom du fichier*/
+    for(i = 0 ; name[i] != '\0' ; i++){
+        elementInsertion->chemin[i] = name[i];
+    }
+
+    elementInsertion->adresseInode = creerInode(contenue);
+    int retour = writeRepertoireInFile(elementInsertion);
+    writeRepertoireLibreInFile();
+    return retour;
 }
+
 int lireFichier(char* name){
+    int positionDansFichier = getAdressRepertoire(name);
+    struct element elementAfficher;
+    FILE *fp = fopen("repertoire.dat","rb+");
+    fseek(fp, positionDansFichier*sizeof(struct element), SEEK_SET);
+    fread(&elementAfficher, positionDansFichier * sizeof(struct element), 1, fp);
+    fclose(fp);
+    if(elementAfficher.adresseInode == -1){
+        return -1;
+    }
+    printInode(elementAfficher.adresseInode);
     return 0;
 }
+
 int creerRepertoire(char* name){
-    return 0;
+    /**Si le fichier existe deja on retourne -1*/
+    if(getAdressRepertoire(name) != -1){
+        return -1;
+    }
+
+    /**Creation du nom du fichier parent*/
+    char nomFichierParent[40] = {'\0'};
+    /**calcul de la longeur du char name*/
+    int i = 0;
+    while(name[i] != '\0'){
+        i++;
+    }
+    int longeurName = i;
+    while(name[longeurName] != '/' && i > 0){
+        longeurName--;
+    }
+    for(i = 0 ; i < longeurName ; i++){
+        nomFichierParent[i] = name[i];
+    }
+
+
+    struct element *elementInsertion = malloc(sizeof(element));
+    initialiseElement(elementInsertion);
+
+    if(nomFichierParent[0] == '\0'){
+        /**Cele veut dire que le fichier est un root*/
+        elementInsertion->parent = -1;
+    }else{
+        elementInsertion->parent = getAdressRepertoire(nomFichierParent);
+        if(elementInsertion->parent == -1){
+            /**Cele veut dire que le parent n'existe pas et donc c'est une erreur*/
+            free(elementInsertion);
+            return -1;
+        }
+    }
+    /**creation du nom du fichier*/
+    for(i = 0 ; name[i] != '\0' ; i++){
+        elementInsertion->chemin[i] = name[i];
+    }
+
+    elementInsertion->adresseInode = -1;
+    int retour = writeRepertoireInFile(elementInsertion);
+    writeRepertoireLibreInFile();
+    return retour;
 }
 int supprimerRepertoire(char* name){
+    int positionDansFichier = getAdressRepertoire(name);
+    struct element elementSupprimer;
+    FILE *fp = fopen("repertoire.dat","rb+");
+    fseek(fp, positionDansFichier*sizeof(struct element), SEEK_SET);
+    fread(&elementSupprimer, positionDansFichier * sizeof(struct element), 1, fp);
+    fclose(fp);
+    blocLibreRepertoire[positionDansFichier] = 0;
+    if(elementSupprimer.adresseInode != -1){
+        supprimerFichier(elementSupprimer.adresseInode);
+    }
+    supprimerEnfant(positionDansFichier);
     return 0;
 }
-/**
-*   Section à faire fin
-*********************************/
 
+void supprimerEnfant(int adresseParent){
+    int i;
+    struct element elementSupprimer;
+    FILE *fp = fopen("repertoire.dat","rb+");
+    for(i = 0 ; i < sizeof(blocLibreRepertoire)/sizeof(int) ; i++){
+        while(blocLibreRepertoire[i] != 1 && i < sizeof(blocLibreRepertoire)/sizeof(int)){
+            i++;
+        }
+        fseek(fp, i*sizeof(struct element), SEEK_SET);
+        fread(&elementSupprimer, i * sizeof(struct element), 1, fp);
+        if(elementSupprimer.parent == adresseParent){
+            blocLibreRepertoire[i] = 0;
+            supprimerFichier(elementSupprimer.adresseInode);
+            supprimerEnfant(i);
+        }
+    }
+    fclose(fp);
+}
 
 int creerInode(char* contenue){
     iNode *node = malloc(sizeof(iNode));
@@ -361,6 +489,22 @@ int writeNodeInInodeFile(iNode *node){
     fclose(fp);
     return position;
 }
+int writeRepertoireInFile(element *element){
+    int position = 0;
+    while(blocLibreRepertoire[position] != 0){
+        position++;
+    }
+    blocLibreRepertoire[position] = 1;
+
+    FILE *fp = fopen("repertoire.dat", "rb+");
+    fseek(fp, position*sizeof(struct element), SEEK_SET);
+    fwrite(element, sizeof(struct element), 1, fp);
+
+    fclose(fp);
+    return position;
+}
+
+
 void writeCharacterInFile(char charactere, int position){
     FILE *fp = fopen("chaine.dat", "rb+");
     fseek(fp, position, SEEK_SET);
@@ -402,12 +546,13 @@ void writeBlocLibreInFile(){
     fwrite(blocLibre, sizeof(blocLibre), 1, fp);
     fclose(fp);
 }
-void writeFichierLibreInFile(){
-    FILE *fp = fopen("blocLibre.dat", "rb+");
+void writeRepertoireLibreInFile(){
+    FILE *fp = fopen("repertoireLibre.dat", "rb+");
     fseek(fp, 0, SEEK_SET);
-    fwrite(blocLibre, sizeof(blocLibre), 1, fp);
+    fwrite(blocLibreRepertoire, sizeof(blocLibreRepertoire), 1, fp);
     fclose(fp);
 }
+
 void loadBlocLibre(){
     FILE *fp = fopen("indirectionLibre.dat", "rb+");
     fseek(fp, 0, SEEK_SET);
@@ -423,6 +568,55 @@ void loadBlocLibre(){
     fseek(fp2, 0, SEEK_SET);
     fread(&blocLibre, sizeof(int) * (sizeof(blocLibre)/sizeof(blocLibre[0])), 1, fp2);
     fclose(fp2);
+
+    FILE *fp3 = fopen("repertoireLibre.dat", "rb+");
+    fseek(fp3, 0, SEEK_SET);
+    fread(&blocLibreRepertoire, sizeof(int) * (sizeof(blocLibreRepertoire)/sizeof(blocLibreRepertoire[0])), 1, fp3);
+    fclose(fp3);
 }
 
 
+/**
+* return -1 si le fichier n'existe pas
+*/
+int getAdressRepertoire(char* nomFichier){
+    struct element elementLue;
+
+    FILE *fp = fopen("repertoire.dat", "rb+");
+
+    int i = 0;
+    while(1){
+        while(blocLibreRepertoire[i] != 1){
+            i++;
+            /**Regarde si le fichier à dépacer la longueur de l'allocation de fichier*/
+            if(i >= sizeof(blocLibreRepertoire)/sizeof(blocLibreRepertoire[0])){
+                return -1;
+            }
+        }
+        fseek(fp, i*sizeof(struct element), SEEK_SET);
+        fread(&elementLue, sizeof(struct element), 1, fp);
+        int j = 0;
+        while(nomFichier[j] == elementLue.chemin[j]
+              && nomFichier[j] != '\0'
+              && elementLue.chemin[j] != '\0'){
+            j++;
+        }
+        if(nomFichier[j] == '\0' && elementLue.chemin[j] == '\0'){
+            fclose(fp);
+            return i;
+        }
+
+        i++;
+    }
+    fclose(fp);
+    return -1;
+}
+
+void initialiseElement(element *Repertoire){
+    int i;
+    for(i = 0 ; i < 40 ; i++){
+        Repertoire->chemin[i] = '\0';
+    }
+    Repertoire->parent = -1;
+    Repertoire->adresseInode = -1;
+}
