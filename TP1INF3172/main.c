@@ -20,17 +20,8 @@ char* pathIndirectionLibre = "indirectionLibre.dat";
 char* pathRepertoireLibre = "repertoireLibre.dat";
 
 int main(){
-<<<<<<< HEAD
     char * d = "/sfdsf/dsfsdfds/wwwee/wwwqqqff ff";
-    verifierFicLongueur(d);
-    return;
-=======
 
-
-    char * d = "/sfdsf/dsfsdfds/wwwee/wwwqqq";
-    verifierRepParent(d);
-
->>>>>>> origin/master
     verifierDemarage();
     loadBlocLibre();
     demarerInviteCommande();
