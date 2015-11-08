@@ -23,5 +23,6 @@ int creerFichier(char* name, char* contenue);
 int supprimerFichier(int positionInode);
 int lireFichier(char* name);
 void loadBlocLibre();
+int getAdressRepertoire(char* nomFichier);
 
 #endif // FICHIER_H

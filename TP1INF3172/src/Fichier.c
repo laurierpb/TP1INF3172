@@ -22,7 +22,6 @@ void writeFichierLibreInFile();
 int gestionIndirectionSimple(char* contenue, int *position);
 int gestionIndirectionDouble(char* contenue, int *position);
 int gestionIndirectionTriple(char* contenue, int *position);
-int getAdressRepertoire(char* nomFichier);
 void initialiseElement(element *repertoire);
 void writeRepertoireLibreInFile();
 int writeRepertoireInFile(element *element);
@@ -65,6 +64,7 @@ int creerFichier(char* name, char* contenue){
     }else{
         elementInsertion->parent = getAdressRepertoire(nomFichierParent);
         if(elementInsertion->parent == -1){
+            printf("Le repertoire parent n'existe pas : %s\n", nomFichierParent);
             free(elementInsertion);
             return -1;
         }
@@ -82,10 +82,14 @@ int creerFichier(char* name, char* contenue){
 
 int lireFichier(char* name){
     int positionDansFichier = getAdressRepertoire(name);
+    if(positionDansFichier == -1){
+        printf("Le fichier n'existe pas\n");
+        return 0;
+    }
     struct element elementAfficher;
     FILE *fp = fopen("repertoire.dat","rb+");
     fseek(fp, positionDansFichier*sizeof(struct element), SEEK_SET);
-    fread(&elementAfficher, positionDansFichier * sizeof(struct element), 1, fp);
+    fread(&elementAfficher, sizeof(struct element), 1, fp);
     fclose(fp);
     if(elementAfficher.adresseInode == -1){
         return -1;
@@ -102,11 +106,13 @@ int creerRepertoire(char* name){
 
     /**Creation du nom du fichier parent*/
     char nomFichierParent[40] = {'\0'};
-    /**calcul de la longeur du char name*/
+    /**Calcul de la longeur du char name*/
     int i = 0;
     while(name[i] != '\0'){
         i++;
     }
+
+    /**Trouve la valeur du parent*/
     int longeurName = i;
     while(name[longeurName] != '/' && i > 0){
         longeurName--;
@@ -114,7 +120,6 @@ int creerRepertoire(char* name){
     for(i = 0 ; i < longeurName ; i++){
         nomFichierParent[i] = name[i];
     }
-
 
     struct element *elementInsertion = malloc(sizeof(element));
     initialiseElement(elementInsertion);
@@ -126,6 +131,7 @@ int creerRepertoire(char* name){
         elementInsertion->parent = getAdressRepertoire(nomFichierParent);
         if(elementInsertion->parent == -1){
             /**Cele veut dire que le parent n'existe pas et donc c'est une erreur*/
+            printf("Le repertoire parent n'existe pas : %s\n", nomFichierParent);
             free(elementInsertion);
             return -1;
         }
@@ -142,11 +148,17 @@ int creerRepertoire(char* name){
 }
 int supprimerRepertoire(char* name){
     int positionDansFichier = getAdressRepertoire(name);
+    if(positionDansFichier == -1){
+        printf("Le repertoire/fichier n'existe pas");
+        return 0;
+    }
     struct element elementSupprimer;
+
     FILE *fp = fopen("repertoire.dat","rb+");
     fseek(fp, positionDansFichier*sizeof(struct element), SEEK_SET);
-    fread(&elementSupprimer, positionDansFichier * sizeof(struct element), 1, fp);
+    fread(&elementSupprimer, sizeof(struct element), 1, fp);
     fclose(fp);
+
     blocLibreRepertoire[positionDansFichier] = 0;
     if(elementSupprimer.adresseInode != -1){
         supprimerFichier(elementSupprimer.adresseInode);
@@ -164,7 +176,7 @@ void supprimerEnfant(int adresseParent){
             i++;
         }
         fseek(fp, i*sizeof(struct element), SEEK_SET);
-        fread(&elementSupprimer, i * sizeof(struct element), 1, fp);
+        fread(&elementSupprimer, sizeof(struct element), 1, fp);
         if(elementSupprimer.parent == adresseParent){
             blocLibreRepertoire[i] = 0;
             supprimerFichier(elementSupprimer.adresseInode);
@@ -240,18 +252,15 @@ int gestionIndirectionSimple(char* contenue, int *position){
             break;
         }
     }
-
     while(positionInode < 8){
         indirectionSimple->bloc[positionInode] = -1;
         positionInode++;
     }
-
     /**set le bloque libre d'indirection*/
     int i = 0;
     while(blocLibreIndirection[i] != 0){
         i++;
     }
-
     blocLibreIndirection[i] = 1;
     writeBlockEntierInFile(indirectionSimple->bloc, i);
     free(indirectionSimple);
@@ -327,6 +336,7 @@ int gestionIndirectionTriple(char* contenue, int *position){
     free(indirectionTriple);
     return i;
 }
+
 int supprimerFichier(int positionInode){
     struct iNode node;
     FILE *fp = fopen("inode.dat", "rb+");
@@ -356,6 +366,7 @@ int supprimerFichier(int positionInode){
     writeInodeLibreInFile();
     return 0;
 }
+
 void supprimerIndirectionSimple(int positionIndirection){
     struct indirection indirectionSimple;
     FILE *fp = fopen("indirection.dat", "rb+");
@@ -368,6 +379,7 @@ void supprimerIndirectionSimple(int positionIndirection){
         i++;
     }
 }
+
 void supprimerIndirectionDouble(int positionIndirection){
     struct indirection indirectionDouble;
     FILE *fp = fopen("indirection.dat", "rb+");
@@ -380,6 +392,7 @@ void supprimerIndirectionDouble(int positionIndirection){
             i++;
     }
 }
+
 void supprimerIndirectionTriple(int positionIndirection){
     struct indirection indirectionTriple;
     FILE *fp = fopen("indirection.dat", "rb+");
@@ -392,6 +405,7 @@ void supprimerIndirectionTriple(int positionIndirection){
             i++;
     }
 }
+
 void printInode(int positionInode){
     if(blocLibreInode[positionInode] == 0){
         return;
@@ -401,9 +415,9 @@ void printInode(int positionInode){
     for(i = 0 ; i < 8 ; i++){
         node.bloc[i] = -1;
     }
-    node.indirectionSimple=-1;
-    node.indirectionDouble=-1;
-    node.indirectionTriple=-1;
+    node.indirectionSimple = -1;
+    node.indirectionDouble = -1;
+    node.indirectionTriple = -1;
 
     FILE *fp = fopen("inode.dat", "rb+");
     fseek(fp, positionInode*sizeof(struct iNode), SEEK_SET);
@@ -430,7 +444,9 @@ void printInode(int positionInode){
     if(node.indirectionTriple!= -1){
         printIndirectionTriple(node.indirectionTriple);
     }
+    printf("\n");
 }
+
 void printIndirectionSimple(int indirectionSimplePointeur){
     struct indirection indirectionSimple;
     FILE *fp = fopen("indirection.dat", "rb+");
@@ -617,6 +633,6 @@ void initialiseElement(element *Repertoire){
     for(i = 0 ; i < 40 ; i++){
         Repertoire->chemin[i] = '\0';
     }
-    Repertoire->parent = -1;
-    Repertoire->adresseInode = -1;
+    Repertoire -> parent = -1;
+    Repertoire -> adresseInode = -1;
 }

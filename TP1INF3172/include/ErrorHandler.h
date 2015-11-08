@@ -18,6 +18,7 @@ int verifierCheminAbsolu(char *);
 int verifierExist(char *);
 int verifierRepParent(char *);
 int verifierFicLongueur(char *);
+int verifierExisteDeja(char *chemin);
 
 
 #endif // ERRORHANDLER_H

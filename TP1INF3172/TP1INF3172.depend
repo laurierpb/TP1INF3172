@@ -1,52 +1,24 @@
 # depslib dependency file v1.0
-1446939100 source:e:\gitproject\tp1inf3172\tp1inf3172\main.c
+1446960088 source:e:\gitproject\tp1inf3172\tp1inf3172\main.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"ErrorHandler.h"
 	"Fichier.h"
 
-1446926517 source:e:\gitproject\tp1inf3172\tp1inf3172\src\errorhandler.c
+1446951886 e:\gitproject\tp1inf3172\tp1inf3172\include\errorhandler.h
+
+1446955712 e:\gitproject\tp1inf3172\tp1inf3172\include\fichier.h
+
+1446959560 source:e:\gitproject\tp1inf3172\tp1inf3172\src\errorhandler.c
 	"ErrorHandler.h"
+	"Fichier.h"
+	<stdio.h>
 	<string.h>
 
-1446910524 e:\gitproject\tp1inf3172\tp1inf3172\include\errorhandler.h
-
-1446939444 source:e:\gitproject\tp1inf3172\tp1inf3172\src\fichier.c
+1446959902 source:e:\gitproject\tp1inf3172\tp1inf3172\src\fichier.c
 	<stdio.h>
 	<stdlib.h>
 	<string.h>
 	"Fichier.h"
-
-1446926800 e:\gitproject\tp1inf3172\tp1inf3172\include\fichier.h
-
-1446949382 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\errorhandler.c
-	"ErrorHandler.h"
-	<string.h>
-
-1446949204 c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\include\errorhandler.h
-
-1446936839 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\fichier.c
-	<stdio.h>
-	<stdlib.h>
-	"Fichier.h"
-
-1446936838 c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\include\fichier.h
-
-1446949282 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\main.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	"ErrorHandler.h"
-	"Fichier.h"
-
-1446871564 source:c:\users\pierre-olivier\desktop\uqam\session 4\3172\tp1\gittp1\tp1inf3172\tp1inf3172\src\elementrep.c
-
-1446924656 source:e:\gitproject\tp1inf3172\tp1inf3172\src\elementrep.c
-	<stdio.h>
-	<stdlib.h>
-	<string.h>
-	<ElementRep.h>
-
-1446924246 e:\gitproject\tp1inf3172\tp1inf3172\include\elementrep.h
 
